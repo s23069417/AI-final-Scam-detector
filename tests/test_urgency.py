@@ -21,6 +21,11 @@ def ids(message: str) -> set[str]:
         "Your offer expires today, act now!",
         "Шұғыл түрде банкке хабарласыңыз.",
         "24 сағат ішінде растаңыз.",
+        # from Ulzhan's review
+        "Тек бүгін!",
+        "Бір сағат ішінде растаңыз.",
+        "Подтвердите в течение часа.",
+        "Please confirm within an hour.",
     ],
 )
 def test_finds_time_pressure(message):
@@ -38,6 +43,14 @@ def test_finds_time_pressure(message):
         "FINAL NOTICE about your parcel.",
         "Сіздің картаңыз бұғатталады.",
         "Растаңыз, әйтпесе шотыңыз бұғатталады.",
+        # from Ulzhan's review
+        "Картаңыз блокталады.",
+        "Сізге қатысты қылмыстық іс қозғалды.",
+        "Растаңыз, болмаса шотыңыз жабылады.",
+        # "a loan is being taken out in your name"
+        "Сіздің атыңызға несие рәсімделуде.",
+        "На ваше имя оформляют кредит, срочно свяжитесь с нами.",
+        "Someone is applying for a loan in your name.",
     ],
 )
 def test_finds_threats(message):
@@ -52,6 +65,8 @@ def test_finds_threats(message):
         "Привет! Встретимся завтра в 10 у входа в университет?",
         "Your order has been shipped and will arrive on Friday.",
         "Сабақ ертең сағат 9-да басталады.",
+        # "жедел жәрдем" is the ambulance (false alarm found in Ulzhan's review)
+        "Әжем ауырып қалды, жедел жәрдем шақырдық.",
         "",
     ],
 )
