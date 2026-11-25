@@ -14,6 +14,8 @@ CODE = sig("code_request", "high")
 TRANSFER = sig("transfer_request", "high")
 TIME = sig("urgency_time_pressure", "medium")
 THREAT = sig("urgency_threat", "medium")
+INFO = sig("official_bank_domain", "low")  # an informational signal
+INFO2 = sig("short_link_resolved", "low")
 
 
 @pytest.mark.parametrize(
@@ -26,6 +28,9 @@ THREAT = sig("urgency_threat", "medium")
         ([CODE, TIME], "scam"),
         ([CODE, TRANSFER], "scam"),
         ([CODE, CODE], "suspicious"),  # the same id twice is still one kind of signal
+        # Low signals never raise the floor (from Ulzhan's review).
+        ([CODE, INFO], "suspicious"),
+        ([INFO, INFO2], "legitimate"),
     ],
 )
 def test_rule_floor(signals, expected):

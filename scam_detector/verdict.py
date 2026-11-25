@@ -32,18 +32,20 @@ def rank(label: str) -> int:
 def rule_floor(signals: Iterable[Signal]) -> str:
     """The lowest label the tool signals allow.
 
-    - scam:       a high-severity signal plus any other distinct signal
-                  (e.g. a code request together with urgency);
+    - scam:       a high-severity signal plus another distinct high or medium
+                  signal (e.g. a code request together with urgency);
     - suspicious: one high-severity signal, or two different medium ones;
     - legitimate: otherwise.
+
+    Low-severity signals are informational and never raise the floor.
     """
     signals = list(signals)
     high_ids = {s.id for s in signals if s.severity == "high"}
-    other_ids = {s.id for s in signals if s.severity != "high"}
+    medium_ids = {s.id for s in signals if s.severity == "medium"}
 
-    if high_ids and (len(high_ids) >= 2 or other_ids):
+    if high_ids and (len(high_ids) >= 2 or medium_ids):
         return "scam"
-    if high_ids or len(other_ids) >= 2:
+    if high_ids or len(medium_ids) >= 2:
         return "suspicious"
     return "legitimate"
 
