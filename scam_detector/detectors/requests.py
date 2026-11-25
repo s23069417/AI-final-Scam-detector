@@ -30,7 +30,7 @@ EN_SHARE = (
 # Kazakh imperatives come after the object: "кодты айтыңыз".
 # Negative forms ("айтпаңыз", "жібермеңіз") do not match these stems.
 KK_SHARE = (
-    r"(?:айтыңыз|айтып\s+жіберіңіз|жіберіңіз|жіберсеңіз|хабарлаңыз|беріңіз|"
+    r"(?:айтыңыз|атаңыз|айтып\s+жіберіңіз|жіберіңіз|жіберсеңіз|хабарлаңыз|беріңіз|"
     r"жазыңыз|көрсетіңіз|растаңыз|айтасыз\s+ба)"
 )
 
@@ -50,9 +50,10 @@ EN_CARD = (
     r"(?:card\s+number|card\s+details|card\s+data|expiry\s+date|expiration\s+date|"
     r"security\s+code|cvv2?|cvc2?|three\s+digits|3\s+digits)"
 )
+# "карт\w*" covers both "карта" and the colloquial "карточка" ("карточкаңыздың нөмірін").
 KK_CARD = (
-    r"(?:карта\w*\s+нөмір\w*|карта\w*\s+дерект\w*|карта\w*\s+мәлімет\w*|"
-    r"жарамдылық\s+мерзім\w*|cvv2?|cvc2?)"
+    r"(?:карт\w*\s+нөмір\w*|карт\w*\s+дерект\w*|карт\w*\s+мәлімет\w*|"
+    r"жарамдылық\s+мерзім\w*|үш\s+сан\w*|cvv2?|cvc2?)"
 )
 
 RU_PAY = (
@@ -67,8 +68,13 @@ EN_PAY = r"\b(?:transfer|send|wire|pay|deposit|move)\b"
 EN_MONEY = (
     r"(?:money|funds|\bfee\b|fees|deposit|\$\s?\d+|\d[\d,]*\s*(?:kzt|tenge|tg|usd|\$))"
 )
-KK_MONEY = r"(?:ақша\w*|қаражат\w*|комиссия\w*|төлем\w*|\d[\d\s]*(?:тг|теңге|₸))"
-KK_PAY = r"(?:аударыңыз|жіберіңіз|төлеңіз|салыңыз|енгізіңіз|аудару\s+керек)"
+# Kazakh texts often spell the currency the Russian way ("тенге"), so accept both.
+KK_MONEY = r"(?:ақша\w*|қаражат\w*|комиссия\w*|төлем\w*|\d[\d\s]*(?:тг|теңге|тенге|₸))"
+# Imperatives, and "you have to pay" constructions: "төлеу керек", "аудару қажет".
+KK_PAY = (
+    r"(?:аударыңыз|жіберіңіз|төлеңіз|салыңыз|енгізіңіз|"
+    r"(?:төлеу|аудару|салу)\s+(?:керек|қажет))"
+)
 
 # "Safe account" is a red flag on its own, with or without a verb.
 SAFE_ACCOUNT = [

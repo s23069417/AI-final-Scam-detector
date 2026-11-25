@@ -26,6 +26,7 @@ def ids(message: str) -> set[str]:
         # Kazakh
         "Сәлеметсіз бе, банк қызметі. SMS-тегі кодты айтыңыз.",
         "Құпия сөзді осы нөмірге жіберіңіз.",
+        "SMS-тегі кодты атаңыз.",  # from Ulzhan's review
     ],
 )
 def test_finds_code_requests(message):
@@ -39,6 +40,9 @@ def test_finds_code_requests(message):
         "Для зачисления приза нужен CVV код с обратной стороны карты.",
         "To receive the refund, provide your card number and expiry date.",
         "Ұтысты алу үшін карта нөмірін жазыңыз.",
+        # from Ulzhan's review
+        "Карточкаңыздың нөмірін жазыңыз.",
+        "Картаның артындағы үш санды айтыңыз.",
     ],
 )
 def test_finds_card_data_requests(message):
@@ -55,6 +59,10 @@ def test_finds_card_data_requests(message):
         "To claim your prize, pay a small fee of $5.",
         "Сыйлықты алу үшін 3000 теңге аударыңыз.",
         "Ақшаңызды қауіпсіз шотқа аударыңыз.",
+        # from Ulzhan's review
+        "3000 тенге аударыңыз.",
+        "Жеткізу үшін 2500 теңге төлеу керек.",
+        "Сыйлық үшін 2500 теңге төлеу қажет.",
     ],
 )
 def test_finds_transfer_requests(message):
@@ -70,6 +78,8 @@ def test_finds_transfer_requests(message):
         "Your verification code is 739201. Never share this code with anyone.",
         "Do not share your PIN or CVV with anyone, including bank staff.",
         "Растау коды: 6612. Кодты ешкімге айтпаңыз.",
+        "Кодты ешқандай жағдайда айтпаңыз.",
+        "Коммуналдық төлем қабылданды: 8 400 теңге.",
         # Ordinary transaction notices.
         "Покупка 4 590 тг, MAGNUM, карта *1234. Доступно 120 000 тг.",
         "Your transfer of 5000 KZT was received. Thank you.",
