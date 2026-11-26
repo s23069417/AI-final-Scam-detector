@@ -116,15 +116,6 @@ even by accident. We will also use it to compare online and offline evaluation r
 `scam_detector/tools/official_domains.txt`, one per line, so a non-programmer can check
 and edit it. A missing official domain causes false alarms; a wrong one lets fakes through.
 
-**W8. Two official domains were guessed wrong (caught by checking the list by hand).**
-The agent wrote `fortebank.com` and `otbasybank.kz` as the main sites. Checked on
-2026-11-26: ForteBank's main site is `forte.kz` (`fortebank.com` is only its e-mail
-domain), and Otbasy bank's main site is `hcsbk.kz` (`otbasybank.kz` is its Baspana Market
-portal). A real SMS with `bank.forte.kz` would have been flagged as a look-alike (the
-brand word "forte" in a non-official domain) — a false alarm; `hcsbk.kz` was simply not
-recognised as official. Both main domains added and covered by tests. Lesson: facts the
-agent writes from memory (like domain lists) need a human check against real sources.
-
 **D13. Three look-alike tricks, and their limits.**
 1) Cyrillic letters that look Latin ("kаspi.kz"); 2) a bank name inside another domain
 ("kaspi-bonus.kz", "kaspi.kz.secure-login.top"); 3) a one- or two-letter typo of an
@@ -150,3 +141,30 @@ and adding `links.py` (with `TOOL`) last, so every commit keeps the tests green.
 To catch "kаspi.kz", the host is translated to Latin look-alikes first. The agent then
 searched for brand words only in the translated host, where "каспи" becomes "kacпи", so
 "каспи-бонус.kz" was not flagged. Fixed: brand words are searched in both spellings.
+
+**W8. Two official domains were guessed wrong (caught by checking the list by hand).**
+The agent wrote `fortebank.com` and `otbasybank.kz` as the main sites. Checked on
+2026-11-26: ForteBank's main site is `forte.kz` (`fortebank.com` is only its e-mail
+domain), and Otbasy bank's main site is `hcsbk.kz` (`otbasybank.kz` is its Baspana Market
+portal). A real SMS with `bank.forte.kz` would have been flagged as a look-alike (the
+brand word "forte" in a non-official domain) — a false alarm; `hcsbk.kz` was simply not
+recognised as official. Both main domains added and covered by tests. Lesson: facts the
+agent writes from memory (like domain lists) need a human check against real sources.
+(The agent first inserted this entry in the wrong place, between D12 and D13; moved here.)
+
+## 2026-11-26 — Ulzhan (labelled data, with Claude Code)
+
+**D14. One CSV format, a fixed stratified split, and checks before the split.**
+All languages use the same columns (`eval/dataset.py`, rules in `data/README.md`). Gold
+labels are only `scam` / `legitimate`; the system's `suspicious` counts as scam (PLAN.md).
+`python -m eval.split` splits 30/70 inside every (language, label) group with a fixed
+seed and refuses to overwrite an existing split, so the split really is fixed once.
+`python -m eval.check_data` reports format errors, possible real phone or card numbers,
+and counts against the plan; for the test set it only counts unchecked labels and never
+prints the test messages (CLAUDE.md rule 3).
+
+**D15. The coding agent does not write evaluation messages.**
+The agent offered to draft the Kazakh messages. Ulzhan decided to write them herself:
+the agent has read the detector patterns, so its texts could unknowingly match them and
+inflate the results; and labels must come from people (CLAUDE.md rule 4). The agent only
+builds the tooling and checks the format.
