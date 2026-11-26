@@ -51,7 +51,7 @@ def test_request_shape():
     assert call["model"] == "test-model"
     assert call["output_config"] == {"effort": "low"}
     assert {t["name"] for t in call["tools"]} == {"detect_requests", "detect_urgency",
-                                                   "submit_verdict"}
+                                                   "inspect_links", "submit_verdict"}
     assert "<message>" in call["messages"][0]["content"]
     assert "temperature" not in call  # sampling parameters are rejected by current models
 

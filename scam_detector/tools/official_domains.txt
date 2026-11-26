@@ -1,0 +1,26 @@
+# Official domains of Kazakhstan banks and government services.
+# One domain per line; subdomains are accepted too (online.kaspi.kz matches kaspi.kz).
+# Text after "#" is a comment.
+#
+# Each domain must be checked by hand on the organisation's own website before v1.0.
+# A missing official domain causes a false alarm on real bank messages; a wrong one
+# lets a fake domain through.
+#
+# Checked 2026-11-26 (Ulzhan): forte.kz, fortebank.com, berekebank.kz, bankffin.kz,
+# hcsbk.kz, otbasybank.kz, against the banks' own pages and Wikipedia.
+
+kaspi.kz
+halykbank.kz
+homebank.kz          # Halyk Bank online banking
+bcc.kz               # Bank CenterCredit
+jusan.kz
+eubank.kz            # Eurasian Bank
+homecredit.kz
+forte.kz             # ForteBank main site (also bank.forte.kz, ir.forte.kz)
+fortebank.com        # ForteBank e-mail domain (info@fortebank.com)
+berekebank.kz        # Bereke Bank
+bankffin.kz          # Freedom Bank Kazakhstan
+hcsbk.kz             # Otbasy bank main site (online.hcsbk.kz)
+otbasybank.kz        # Otbasy bank portal Baspana Market and online banking
+egov.kz
+gov.kz

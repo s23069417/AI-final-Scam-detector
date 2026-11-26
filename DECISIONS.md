@@ -94,3 +94,59 @@ mind when adding Kazakh patterns.
 
 **D4 follow-up.** The link inspector makes network calls only for short links (Ulzhan's
 answer in her review), so running it after the loop is acceptable.
+
+## 2026-11-26 — Ulzhan (link inspector, with Claude Code)
+
+**D10. Four link signals, severities chosen to fit the safety floor (D3).**
+`lookalike_domain` (high), `short_link` (medium), `ip_link` (medium), `risky_tld` (low).
+A fake bank link alone gives at least `suspicious`; together with urgency or a code
+request it gives `scam`. A short link alone does not raise the floor, because real
+newsletters use them too. `risky_tld` is informational: cheap domains are common for
+scam sites but also for ordinary small sites, and W5 already makes `low` harmless.
+Links to official domains give no signal, so a real bank SMS with a link stays clean.
+
+**D11. Network only for short links, HEAD only, and an offline switch.**
+Only shortener links (bit.ly, clck.ru, ...) are followed, with HEAD requests, at most
+5 redirects, 3 s timeout (rule 6 of CLAUDE.md). Any network error gives "short link,
+destination unknown", never a crash. `SCAM_LINKS_OFFLINE=1` turns the network off; a
+`tests/conftest.py` fixture sets it for every test, so no test can touch the network
+even by accident. We will also use it to compare online and offline evaluation runs.
+
+**D12. Official domains in a plain text file.**
+`scam_detector/tools/official_domains.txt`, one per line, so a non-programmer can check
+and edit it. A missing official domain causes false alarms; a wrong one lets fakes through.
+
+**W8. Two official domains were guessed wrong (caught by checking the list by hand).**
+The agent wrote `fortebank.com` and `otbasybank.kz` as the main sites. Checked on
+2026-11-26: ForteBank's main site is `forte.kz` (`fortebank.com` is only its e-mail
+domain), and Otbasy bank's main site is `hcsbk.kz` (`otbasybank.kz` is its Baspana Market
+portal). A real SMS with `bank.forte.kz` would have been flagged as a look-alike (the
+brand word "forte" in a non-official domain) — a false alarm; `hcsbk.kz` was simply not
+recognised as official. Both main domains added and covered by tests. Lesson: facts the
+agent writes from memory (like domain lists) need a human check against real sources.
+
+**D13. Three look-alike tricks, and their limits.**
+1) Cyrillic letters that look Latin ("kаspi.kz"); 2) a bank name inside another domain
+("kaspi-bonus.kz", "kaspi.kz.secure-login.top"); 3) a one- or two-letter typo of an
+official name ("kaspl.kz"). Limits we accept for now: the site name is taken as the label
+before the last dot (fine for .kz/.com/.top, wrong for e.g. ".com.kz"); brand words can
+cause a false alarm on an unrelated site that contains "kaspi" or "forte"; names shorter
+than 4 letters ("bcc", "gov") are not checked for typos. The evaluation will show whether
+this matters.
+
+**Change in Gulmira's test.** `test_request_shape` listed the exact tool names; it now
+includes `inspect_links`, as `default_tools()` was designed to do (D1).
+
+### Where the agent was wrong
+
+**W6. First commit broke 14 agent tests.**
+The agent first wrote the link finder straight into `tools/links.py`. But
+`default_tools()` imports `links.TOOL` as soon as the file exists, so every agent test
+failed with `AttributeError`. Noticed because we run the full test suite before every
+commit. Fixed by splitting the inspector into `urls.py`, `domains.py`, `redirects.py`
+and adding `links.py` (with `TOOL`) last, so every commit keeps the tests green.
+
+**W7. Cyrillic brand names were missed (caught by a failing test).**
+To catch "kаspi.kz", the host is translated to Latin look-alikes first. The agent then
+searched for brand words only in the translated host, where "каспи" becomes "kacпи", so
+"каспи-бонус.kz" was not flagged. Fixed: brand words are searched in both spellings.

@@ -17,7 +17,7 @@ their results and gives a verdict through a `submit_verdict` tool:
 |---|---|
 | `detect_requests` | requests to share a code / PIN / CVV, to give card data, to transfer money or use a "safe account" |
 | `detect_urgency` | time pressure ("срочно", "within 24 hours") and threats ("карта будет заблокирована") |
-| `inspect_links` | short-URL redirects and look-alike bank domains *(in progress)* |
+| `inspect_links` | look-alike bank and government domains ("kaspi-bonus.kz"), short links (followed with HEAD requests only, never opening the page), bare IP links, risky domains (.xyz, .top) |
 
 The verdict logic then combines the LLM's label with the tool signals: signals set a minimum
 label (a code request is never "legitimate"), and the LLM may cite only signals a tool really found.
@@ -51,6 +51,9 @@ python -m pytest -q
 ```
 
 Tests use a fake LLM client and never call the real API, so they need no key.
+They also never touch the network: `SCAM_LINKS_OFFLINE=1` is set for every test, and the
+link inspector then does not follow short links. Set the same variable when running the
+product to keep it fully offline.
 
 ## Project layout
 
@@ -58,6 +61,9 @@ Tests use a fake LLM client and never call the real API, so they need no key.
 scam_detector/
   signals.py         shared Signal / Tool contract
   detectors/         rule-based detectors (requests, urgency)
+  tools/             link inspector: urls.py (find links), domains.py (host checks),
+                     redirects.py (HEAD-only short-link resolver), links.py (the tool),
+                     official_domains.txt (list of official bank / government domains)
   agent.py           the LLM agent loop
   verdict.py         safety floor and grounded citations
   prompts.py         system prompt (draft)
