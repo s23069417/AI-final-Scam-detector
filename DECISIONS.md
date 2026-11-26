@@ -60,6 +60,37 @@ after the verb. Fixed with a separator that also accepts commas (`SEP` in `_matc
 
 ### Open questions for the team
 
-- Kazakh patterns were written with the agent and need a check by a native speaker
-  (Ulzhan owns the Kazakh data).
+- ~~Kazakh patterns were written with the agent and need a check by a native speaker~~ —
+  done in Ulzhan's review of PR #1, see W3–W5.
 - The draft system prompt (`prompts.py`, `v0-draft`) is Tomiris's to tune on the dev set.
+
+## 2026-11-25 — Gulmira (fixes after Ulzhan's review of PR #1)
+
+Ulzhan reviewed PR #1 with her own coding agent and ran 20 of her own Kazakh phrases
+through the detectors. Every finding was reproduced before fixing; each phrase is now a test.
+
+**W3. Kazakh gaps in the request detector (missed scams).**
+The agent that wrote the patterns did not know the verb "атаңыз", the colloquial
+"карточка", "үш сан" (CVV digits), "тенге" spelled the Russian way in Kazakh texts, or
+"төлеу керек/қажет". Fixed in `detectors/requests.py`.
+
+**W4. Kazakh and Russian gaps in the urgency detector, and one false alarm.**
+Time limits without a digit ("в течение часа", "бір сағат ішінде"), "тек бүгін",
+"блокталады", "қылмыстық іс" were missed. "жедел" fired on "жедел жәрдем" (ambulance),
+a false alarm on an ordinary family message. Fixed with a negative lookahead.
+
+**D9. "Loan in your name" scare counts as `urgency_threat`.**
+Ulzhan pointed out the common scheme "атыңызға несие рәсімделуде" / "на ваше имя
+оформляют кредит". It is a threat used to create panic, so it goes under the existing
+`urgency_threat` id (no new id, so PLAN.md does not change).
+
+**W5. `rule_floor` counted any non-high signal.**
+A future informational `low` signal plus a code request would have given `scam`.
+Now only `medium` signals count; `low` never raises the floor.
+
+**Note for future Kazakh patterns.** In Kazakh "не" means "what", while `WEAK_NEGATION`
+treats it as the Russian negation. It does not cause errors in current tests; keep it in
+mind when adding Kazakh patterns.
+
+**D4 follow-up.** The link inspector makes network calls only for short links (Ulzhan's
+answer in her review), so running it after the loop is acceptable.
