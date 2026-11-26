@@ -27,7 +27,12 @@ def test_load_official_domains_from_a_file(tmp_path):
 
 
 @pytest.mark.parametrize(
-    "host", ["kaspi.kz", "online.kaspi.kz", "www.halykbank.kz", "homebank.kz", "egov.kz"]
+    "host",
+    [
+        "kaspi.kz", "online.kaspi.kz", "www.halykbank.kz", "homebank.kz", "egov.kz",
+        # checked by hand on 2026-11-26
+        "bank.forte.kz", "berekebank.kz", "bankffin.kz", "online.hcsbk.kz", "otbasybank.kz",
+    ],
 )
 def test_official_hosts(host):
     assert is_official(host)

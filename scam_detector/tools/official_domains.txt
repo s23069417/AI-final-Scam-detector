@@ -3,8 +3,11 @@
 # Text after "#" is a comment.
 #
 # Each domain must be checked by hand on the organisation's own website before v1.0.
-# Lines marked "CHECK" are not verified yet. A missing official domain causes a false
-# alarm on real bank messages; a wrong one lets a fake domain through.
+# A missing official domain causes a false alarm on real bank messages; a wrong one
+# lets a fake domain through.
+#
+# Checked 2026-11-26 (Ulzhan): forte.kz, fortebank.com, berekebank.kz, bankffin.kz,
+# hcsbk.kz, otbasybank.kz, against the banks' own pages and Wikipedia.
 
 kaspi.kz
 halykbank.kz
@@ -13,9 +16,11 @@ bcc.kz               # Bank CenterCredit
 jusan.kz
 eubank.kz            # Eurasian Bank
 homecredit.kz
-fortebank.com        # CHECK
-berekebank.kz        # CHECK
-bankffin.kz          # Freedom Bank, CHECK
-otbasybank.kz        # CHECK
+forte.kz             # ForteBank main site (also bank.forte.kz, ir.forte.kz)
+fortebank.com        # ForteBank e-mail domain (info@fortebank.com)
+berekebank.kz        # Bereke Bank
+bankffin.kz          # Freedom Bank Kazakhstan
+hcsbk.kz             # Otbasy bank main site (online.hcsbk.kz)
+otbasybank.kz        # Otbasy bank portal Baspana Market and online banking
 egov.kz
 gov.kz

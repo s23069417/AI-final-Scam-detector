@@ -114,9 +114,16 @@ even by accident. We will also use it to compare online and offline evaluation r
 
 **D12. Official domains in a plain text file.**
 `scam_detector/tools/official_domains.txt`, one per line, so a non-programmer can check
-and edit it. Lines marked `CHECK` are not yet verified on the banks' own websites;
-Ulzhan verifies them before v1.0. A missing official domain causes false alarms; a wrong
-one lets fakes through.
+and edit it. A missing official domain causes false alarms; a wrong one lets fakes through.
+
+**W8. Two official domains were guessed wrong (caught by checking the list by hand).**
+The agent wrote `fortebank.com` and `otbasybank.kz` as the main sites. Checked on
+2026-11-26: ForteBank's main site is `forte.kz` (`fortebank.com` is only its e-mail
+domain), and Otbasy bank's main site is `hcsbk.kz` (`otbasybank.kz` is its Baspana Market
+portal). A real SMS with `bank.forte.kz` would have been flagged as a look-alike (the
+brand word "forte" in a non-official domain) — a false alarm; `hcsbk.kz` was simply not
+recognised as official. Both main domains added and covered by tests. Lesson: facts the
+agent writes from memory (like domain lists) need a human check against real sources.
 
 **D13. Three look-alike tricks, and their limits.**
 1) Cyrillic letters that look Latin ("kаspi.kz"); 2) a bank name inside another domain
