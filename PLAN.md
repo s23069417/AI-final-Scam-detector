@@ -48,7 +48,10 @@ Signal ids (extend in this table, never rename):
 | `transfer_request` | detect_requests | high | asks to transfer or pay money, "safe account" |
 | `urgency_time_pressure` | detect_urgency | medium | "urgently", "within 30 minutes", "today only" |
 | `urgency_threat` | detect_urgency | medium | "your card will be blocked", "final warning" |
-| (link signals) | inspect_links | — | defined by Ulzhan |
+| `lookalike_domain` | inspect_links | high | a link pretends to be a bank or government site but is not on the official list ("kaspi-bonus.kz", "kаspi.kz" with a Cyrillic letter, "kaspl.kz") |
+| `short_link` | inspect_links | medium | a URL shortener (bit.ly, clck.ru, ...) hides where the link leads; it is followed with HEAD requests and the final address is checked too |
+| `ip_link` | inspect_links | medium | a bare IP address instead of a site name |
+| `risky_tld` | inspect_links | low | cheap top-level domain popular with scam sites (.xyz, .top, ...); informational, never raises the floor |
 
 ## 3. Who does what
 
