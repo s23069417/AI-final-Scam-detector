@@ -1,0 +1,21 @@
+# Official domains of Kazakhstan banks and government services.
+# One domain per line; subdomains are accepted too (online.kaspi.kz matches kaspi.kz).
+# Text after "#" is a comment.
+#
+# Each domain must be checked by hand on the organisation's own website before v1.0.
+# Lines marked "CHECK" are not verified yet. A missing official domain causes a false
+# alarm on real bank messages; a wrong one lets a fake domain through.
+
+kaspi.kz
+halykbank.kz
+homebank.kz          # Halyk Bank online banking
+bcc.kz               # Bank CenterCredit
+jusan.kz
+eubank.kz            # Eurasian Bank
+homecredit.kz
+fortebank.com        # CHECK
+berekebank.kz        # CHECK
+bankffin.kz          # Freedom Bank, CHECK
+otbasybank.kz        # CHECK
+egov.kz
+gov.kz
