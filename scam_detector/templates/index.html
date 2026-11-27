@@ -1,0 +1,260 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>AI Scam Detector</title>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+      background: #f5f7fa;
+      color: #1a1a2e;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 2rem 1rem;
+    }
+
+    header {
+      text-align: center;
+      margin-bottom: 2rem;
+    }
+    header h1 { font-size: 2rem; font-weight: 700; }
+    header p { color: #555; margin-top: 0.4rem; }
+
+    .card {
+      background: #fff;
+      border-radius: 12px;
+      box-shadow: 0 2px 12px rgba(0,0,0,.08);
+      padding: 2rem;
+      width: 100%;
+      max-width: 680px;
+      margin-bottom: 1.5rem;
+    }
+
+    label { font-weight: 600; display: block; margin-bottom: 0.5rem; }
+
+    textarea {
+      width: 100%;
+      min-height: 130px;
+      border: 1.5px solid #d0d7de;
+      border-radius: 8px;
+      padding: 0.75rem 1rem;
+      font-size: 1rem;
+      resize: vertical;
+      transition: border-color .2s;
+    }
+    textarea:focus { outline: none; border-color: #0969da; }
+
+    button[type=submit] {
+      margin-top: 1rem;
+      padding: 0.65rem 1.6rem;
+      background: #0969da;
+      color: #fff;
+      border: none;
+      border-radius: 8px;
+      font-size: 1rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: background .2s;
+    }
+    button[type=submit]:hover { background: #0550ae; }
+
+    /* ---- error ---- */
+    .error-box {
+      background: #fff8dc;
+      border: 1.5px solid #d4a017;
+      border-radius: 8px;
+      padding: 0.8rem 1rem;
+      color: #7a5900;
+      margin-top: 1rem;
+    }
+
+    /* ---- verdict badge ---- */
+    .verdict-badge {
+      display: inline-block;
+      padding: 0.3rem 0.9rem;
+      border-radius: 20px;
+      font-weight: 700;
+      font-size: 1.1rem;
+      margin-bottom: 1rem;
+    }
+    .badge-scam        { background: #ffeef0; color: #cf222e; }
+    .badge-suspicious  { background: #fff8c5; color: #9a6700; }
+    .badge-legitimate  { background: #dafbe1; color: #1a7f37; }
+
+    /* ---- rationale ---- */
+    .rationale {
+      background: #f6f8fa;
+      border-left: 3px solid #0969da;
+      padding: 0.6rem 0.9rem;
+      border-radius: 0 6px 6px 0;
+      font-style: italic;
+      color: #333;
+      margin-bottom: 1rem;
+    }
+
+    /* ---- raised note ---- */
+    .raised-note {
+      background: #fff3e0;
+      border: 1px solid #fb8c00;
+      border-radius: 6px;
+      padding: 0.6rem 0.9rem;
+      color: #7a3800;
+      margin-bottom: 1rem;
+      font-size: 0.9rem;
+    }
+
+    /* ---- signals ---- */
+    .signals-heading {
+      font-weight: 600;
+      margin-bottom: 0.5rem;
+      color: #555;
+      font-size: 0.9rem;
+      text-transform: uppercase;
+      letter-spacing: .04em;
+    }
+    .signal-list { list-style: none; }
+    .signal-item {
+      display: flex;
+      align-items: flex-start;
+      gap: 0.5rem;
+      padding: 0.45rem 0;
+      border-bottom: 1px solid #f0f0f0;
+      font-size: 0.95rem;
+    }
+    .signal-item:last-child { border-bottom: none; }
+
+    .sev-high   { color: #cf222e; font-weight: 700; }
+    .sev-medium { color: #9a6700; font-weight: 600; }
+    .sev-low    { color: #555;    font-weight: 400; }
+
+    .signal-label { flex: 0 0 auto; min-width: 220px; }
+    .signal-evidence {
+      background: #f6f8fa;
+      border-radius: 4px;
+      padding: 0.1rem 0.4rem;
+      font-family: monospace;
+      font-size: 0.88rem;
+      color: #333;
+      word-break: break-all;
+    }
+
+    .uncited-note {
+      font-size: 0.8rem;
+      color: #999;
+      margin-left: auto;
+    }
+
+    /* ---- advice ---- */
+    .advice-box {
+      margin-top: 1.2rem;
+      padding: 0.8rem 1rem;
+      border-radius: 8px;
+      border: 1.5px solid;
+    }
+    .advice-scam        { border-color: #cf222e; background: #ffeef0; color: #7a0014; }
+    .advice-suspicious  { border-color: #d4a017; background: #fff8dc; color: #7a5900; }
+    .advice-legitimate  { border-color: #1a7f37; background: #dafbe1; color: #1a4027; }
+    .advice-heading { font-weight: 700; margin-bottom: 0.3rem; }
+
+    /* ---- groundedness ---- */
+    .meta {
+      font-size: 0.82rem;
+      color: #888;
+      margin-top: 1rem;
+    }
+
+    footer {
+      margin-top: 2rem;
+      font-size: 0.8rem;
+      color: #aaa;
+      text-align: center;
+    }
+  </style>
+</head>
+<body>
+
+<header>
+  <h1>🔍 AI Scam Detector</h1>
+  <p>Вставьте SMS, WhatsApp или Telegram-сообщение. Поддерживается русский, казахский и английский.</p>
+</header>
+
+<div class="card">
+  <form method="post" action="/">
+    <label for="message">Текст сообщения</label>
+    <textarea id="message" name="message" placeholder="Вставьте сообщение здесь...">{{ message }}</textarea>
+
+    {% if input_error %}
+    <div class="error-box">⚠ {{ input_error }}</div>
+    {% endif %}
+
+    <button type="submit">Проверить</button>
+  </form>
+</div>
+
+{% if explanation %}
+<div class="card">
+
+  <!-- Verdict badge -->
+  <span class="verdict-badge badge-{{ explanation.label }}">
+    {% if explanation.label == 'scam' %}⛔{% elif explanation.label == 'suspicious' %}⚠{% else %}✅{% endif %}
+    {{ explanation.label_display }}
+  </span>
+
+  <!-- Rationale from LLM -->
+  {% if explanation.rationale %}
+  <div class="rationale">{{ explanation.rationale }}</div>
+  {% endif %}
+
+  <!-- Floor override note -->
+  {% if explanation.raised_note %}
+  <div class="raised-note">ℹ {{ explanation.raised_note }}</div>
+  {% endif %}
+
+  <!-- Tool signals -->
+  {% if explanation.warnings %}
+  <div class="signals-heading">Признаки, найденные инструментами</div>
+  <ul class="signal-list">
+    {% for w in explanation.warnings %}
+    <li class="signal-item">
+      <span class="signal-label sev-{{ w.severity }}">{{ w.label }}</span>
+      <span class="signal-evidence">{{ w.evidence }}</span>
+      {% if not w.cited %}
+      <span class="uncited-note">(ИИ не упомянул)</span>
+      {% endif %}
+    </li>
+    {% endfor %}
+  </ul>
+  {% endif %}
+
+  <!-- Advice -->
+  <div class="advice-box advice-{{ explanation.label }}">
+    <div class="advice-heading">
+      {% if explanation.label == 'scam' %}Что делать:{% elif explanation.label == 'suspicious' %}Будьте осторожны:{% else %}Вывод:{% endif %}
+    </div>
+    {{ explanation.advice }}
+  </div>
+
+  <!-- Groundedness and meta -->
+  <div class="meta">
+    {% if explanation.groundedness is not none %}
+      Обоснованность ИИ: {{ "%.0f"|format(explanation.groundedness * 100) }}%
+      ({{ explanation.ungrounded_ids|length }} выдуманных ссылок).
+    {% endif %}
+    Источник: {{ explanation.source }}.
+    {% if explanation.error %}
+      Ошибка агента: {{ explanation.error }}.
+    {% endif %}
+  </div>
+
+</div>
+{% endif %}
+
+<footer>AI Scam Detector · Narxoz University, Group 11 · 2026</footer>
+
+</body>
+</html>
