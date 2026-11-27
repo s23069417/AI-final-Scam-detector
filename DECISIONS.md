@@ -150,3 +150,16 @@ and adding `links.py` (with `TOOL`) last, so every commit keeps the tests green.
 To catch "kаspi.kz", the host is translated to Latin look-alikes first. The agent then
 searched for brand words only in the translated host, where "каспи" becomes "kacпи", so
 "каспи-бонус.kz" was not flagged. Fixed: brand words are searched in both spellings.
+
+## 2026-11-27 — Gulmira (review of PR #3)
+
+**W9. The coding agent printed part of the English test set (rule 3 broken by accident).**
+While reviewing PR #3, Gulmira's agent ran `git show $B:scam_detector/app.py` in zsh.
+zsh read `$B:s...` as a variable modifier, so git printed the whole commit, including the
+first ~11 lines of `data/test/messages_en.jsonl` (cut at 160 characters). Noticed in the
+output right away and disclosed in the PR #3 review.
+Consequences: those texts must not be used when changing detectors or prompts. PR #3 is
+asked to move English data to `data/raw/en.csv` and to have test messages written by
+someone other than the prompt author, so the exposed lines will likely be replaced.
+Lesson: always write `"${B}:path"` in shell commands; never print a whole commit that
+may touch `data/test/`.
